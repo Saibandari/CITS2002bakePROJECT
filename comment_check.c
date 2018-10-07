@@ -1,27 +1,24 @@
-//
-// Created by yasom on 7/10/2018.
-//
+#include "bake.h"
 
-#include "comment_check.h"
+void comment_check(FILE * open_file) {
+	char buffer[15000];
+	FILE * buffer_file = fopen("Bufferfile.txt", "a");
+	while(1)
+	{
+		printf("The comment check commennce\n");
+		if(fgets(buffer, sizeof(buffer), open_file)==NULL) break;
+			if (buffer[0] != '#')
+			{
+				printf("Not a comment\n");
+				fprintf(buffer_file,"%s",buffer);
+			}
+			else
+			{
+				printf("it is a comment\n");
+				continue;
 
-//The following function disregards any lines in Bakefile or bakefile that start with a #
-
-void comment_check(FILE * open_file)
-{
-    char buffer[15000];
-    FILE * buffer_file = fopen("Bufferfile.txt", "a");
-    while(1)
-    {
-        if(fgets(buffer, sizeof(buffer), open_file)==NULL) break;
-        if (buffer[0] != '#')
-        {
-            fprintf(buffer_file,"%s",buffer);
-        }
-        else
-        {
-            continue;
-        }
-    }
-    fclose(buffer_file);
+			}
+	}
+	fclose(open_file); // the Bakefile is closed..... but .... the buffer_file (with no comment) is still open
+	fclose(buffer_file);
 }
-

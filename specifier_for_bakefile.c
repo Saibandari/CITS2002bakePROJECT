@@ -1,11 +1,13 @@
 #include "bake.h"
 
 
-char * specifier()
+
+
+void specifier()
 {
 char counter_var[15000];
 FILE * buffer_file = fopen("Bufferfile.txt","a");
-extern char * a;
+char * a;
   while(1)
 
   {
@@ -19,17 +21,17 @@ extern char * a;
     {
       if(strchr(counter_var,':') == 0)
       {
-        a = "This is a targetline";
+        printf("This is a targetline\n");
       }
       else if(strchr(counter_var,'=') == 0 && counter_var[0] != '\t')
       {
-        a = "This is a comment";
+        printf("This is a comment\n")
       }
       else if(counter_var[0] == '\t')
       {
-        a = "This is an action line";
+        printf("This is an action line\n")
       }
     }
   }
-  return(&a);
+  return 0;
 }
