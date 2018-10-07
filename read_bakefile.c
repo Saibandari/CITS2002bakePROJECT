@@ -11,7 +11,6 @@ void read_bakefile()
  {
    FILE * open_file = open_bakefile();
    comment_check(open_file);
-   char a = specifier();
-   printf("%c\n",a);
+   specifier();
  }
 }
