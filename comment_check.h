@@ -6,3 +6,8 @@
 #define BAKE_COMMENT_CHECK_H
 
 #endif //BAKE_COMMENT_CHECK_H
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
