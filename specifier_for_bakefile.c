@@ -1,61 +1,35 @@
-#include <stdio.h>
-#include <sys/wait.h>
-#include <unistd.h>
-#include <stdlib.h>
-#include <string.h>
+#include "bake.h"
 
 
-
-
-void comment(FILE * open_bakefile)
+char * specifier()
 {
-
-  char counter[15000];
-
-  printf("This is the new line character\n");
-  FILE * buffer_file = fopen("Bufferfile.txt", "a");
-
+char counter_var[15000];
+FILE * buffer_file = fopen("Bufferfile.txt","a");
+extern char * a;
   while(1)
+
   {
-    if(fgets(counter, sizeof(counter), open_bakefile)==NULL) break;
-      if (counter[0] != '#')
-      {
-        fprintf(buffer_file,"%s",counter);
-      }
-      else
-      {
-        continue;
-      }
-  }
-
-}
-
-
-
-
-int main(int argc, char const *argv[])
-{
-  FILE * open_bakefile = fopen("Bakefile", "r");
-
-  if(open_bakefile == NULL)
-  {
-    open_bakefile = fopen("bakefile" , "r");
-    comment(open_bakefile);
-    if (open_bakefile == NULL)
+    //printf("While loop works\n");
+    if(fgets(counter_var,sizeof(counter_var),buffer_file) == NULL)
     {
-      printf("No file can be used");
+      printf("no more to read\n");
+      break;
+    }
+    else
+    {
+      if(strchr(counter_var,':') == 0)
+      {
+        a = "This is a targetline";
+      }
+      else if(strchr(counter_var,'=') == 0 && counter_var[0] != '\t')
+      {
+        a = "This is a comment";
+      }
+      else if(counter_var[0] == '\t')
+      {
+        a = "This is an action line";
+      }
     }
   }
-  else
-  {
-    comment(open_bakefile);
-  }
-
-
-
-//printf("%i\n", n);
-fclose(open_bakefile);
-//printf("\n\nnth number of elements:  %i \n\n\n",line - 2);
-
-return 0;
+  return(&a);
 }
