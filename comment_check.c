@@ -3,10 +3,6 @@
 //
 
 #include "comment_check.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <string.h>
 
 //The following function disregards any lines in Bakefile or bakefile that start with a #
 
