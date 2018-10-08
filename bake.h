@@ -6,7 +6,7 @@
 #include <ctype.h>
 #include <unistd.h>
 
-extern FILE * open_bakefile();
-extern int specifier();
-extern void comment_check(FILE*);
-extern void read_bakefile();
+FILE * open_bakefile();
+int specifier();
+void comment_check(FILE*);
+void read_bakefile();
