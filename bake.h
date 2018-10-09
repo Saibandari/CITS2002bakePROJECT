@@ -10,3 +10,6 @@ FILE * open_bakefile();
 int specifier();
 void comment_check(FILE*);
 void read_bakefile();
+void targetname();
+
+const char * default_targetname;
