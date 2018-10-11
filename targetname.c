@@ -2,17 +2,59 @@
 
 #include "bake.h"
 
-void targetname_f(char * buff_counter_var, char * default_targetname)
+void targetname_f(char * counter_var, char * default_targetname)
 {
 
-FILE * file_counter_var = fopen("tokenstorage.txt","r+");
+//struct stat trgt;
+int target_count = 0;
+int len = strlen(counter_var);
+FILE * file_counter_var = fopen("tokenstorage.txt","a"); // open a file to store the seperated arguments of each counter_var
+char * token = strtok(counter_var,":");
+char * targetname = (char*)malloc(2);
+char * dependencies = (char*)malloc(2);
 
-printf("targetname_function works\n");
-printf("counter_var is: %s\n",buff_counter_var);
+while(token != NULL)
+{
+printf("Reading in targetname_f\n");
+  if(target_count == 0)//if it's reading the targetname
+  {
+    targetname = (char*) realloc(targetname,len * sizeof(char*));
 
-struct stat trgt;
+    if (strstr(token,default_targetname) == NULL) // this gives me segmentation error
+    {
+      printf("Not Default target, COPY!!!!!\n");
+      strcpy(targetname,token);
 
-  if(fopen(default_targetname,"r") == 0)
+      //CHECK WHETHER THE FILE EXIST --> FIND THE MOD DATE --> T
+      //IF NOT EXIST --> CREATION DATE IS USED AS T
+
+    }
+
+
+  }
+  else// when it's reading the dependencies
+  {
+    dependencies = (char*)realloc(dependencies,len * sizeof(char*));
+    strcpy(dependencies,token);
+    //USE ANOTHER STRTOK TO READ EACH dependencies
+        //IS IT .o
+        //IS IT files?
+        //IS IT URL?
+        //find their mod time --> T(Dependencies)
+          //IF NONE || T(Targetname) < T(dependencies)
+          //rebuild actionline();
+  }
+  target_count++;
+
+  token = strtok(NULL,":");
+}
+target_count = 0;
+printf("%s\n%s\n",targetname,dependencies);
+fclose(file_counter_var);
+printf("The while loop finished\n");
+
+
+  /*if(fopen(default_targetname,"r") == 0)
   {
     printf("The file is not found\n");
 
@@ -30,7 +72,7 @@ struct stat trgt;
       //int dependencies_tm = .st_mtime;
       //printf("Mod time is:%i\nAccess time is:%i\n", tm,tma);
     }
-  }
+  }*/
 
 fclose(file_counter_var);
 

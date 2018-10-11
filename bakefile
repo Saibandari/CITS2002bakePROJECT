@@ -1,6 +1,6 @@
 VARIABLE =
 
-defaulttarget : mo fo ha hi he 
+defaulttarget : mo fo ha hi he
 
 target.o : ha ha ha
   qwerty
@@ -11,15 +11,9 @@ test.h: blah blah
   yea baby
 
 #I love skates
-Do you really?
-Let's eat
+
 Bacon
 
 NAME = HANSEL
 
   garbage
-
-
-second_target_name : ha ha
-  supposed action lines
-  another supposed action line
