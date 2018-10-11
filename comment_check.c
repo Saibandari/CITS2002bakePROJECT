@@ -1,3 +1,5 @@
+//comment_check.c
+
 #include "bake.h"
 
 void comment_check(FILE * open_file)
@@ -10,14 +12,13 @@ void comment_check(FILE * open_file)
 		if(fgets(buffer, sizeof(buffer), open_file)==NULL) break;
 			if (buffer[0] == '#')
 			{
-				//printf("it is a comment\n");
-				//printf("%s\n",buffer);
+
 				continue;
 
 			}
 			else if (buffer[0] == '\n')
 			{
-				//printf("it is an empty line\n");
+				
 				continue;
 
 			}
