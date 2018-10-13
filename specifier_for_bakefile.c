@@ -53,7 +53,7 @@ int targetline_counter = 0;
       //below: this one is for any other target line
       else if(strchr(counter_var,':') && strstr(counter_var,".o"))
       {
-        
+        printf("&&&&&&&\n");
         printf("Counter var -->%s\n",counter_var);
         a = 1;
         b = 0;

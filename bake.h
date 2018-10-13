@@ -5,6 +5,9 @@
 #include <limits.h>
 #include <ctype.h>
 #include <unistd.h>
+#include <time.h>
+
+#include <curl/curl.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <sys/param.h>
@@ -16,6 +19,5 @@ void read_bakefile();
 void targetname_f(char * counter_var,char * default_targetname);
 
 const char * targetname;
-//char * default_targetname;
+
 char * token;
-//FILE * file_counter_var;

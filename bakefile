@@ -1,14 +1,8 @@
-VARIABLE =
+default_target : target.o dependency.o
+ action line
 
-defaulttarget : mo fo ha hi he
-
-target.o : ha ha ha
-  qwerty
-  Aloysius
-
-test.h: blah blah
-  suck it
-  yea baby
+target.o : test.c https://
+  wow
 
 #I love skates
 
