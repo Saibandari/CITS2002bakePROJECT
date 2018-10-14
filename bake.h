@@ -6,7 +6,6 @@
 #include <ctype.h>
 #include <unistd.h>
 #include <time.h>
-
 #include <curl/curl.h>
 #include <sys/stat.h>
 #include <sys/types.h>
@@ -23,5 +22,6 @@ const char * targetname;
 char * token;
 
 time_t buffer_dependencies_time;
+time_t file_time;
 
 FILE * open_bakefile();

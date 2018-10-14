@@ -9,7 +9,8 @@ bool present;
 
 struct stat target;
 struct stat depend;
-//CURL * curl;
+
+CURL * curl;
 
 int len = strlen(buff_counter_var_2);
 int start = 0;
@@ -124,8 +125,61 @@ while(dependencies_token != NULL)
     //this is if it is for the URL, the obtaining time is different
     if(strstr(dependencies_token_2,"file://") != NULL || strstr(dependencies_token_2,"http://") != NULL || strstr(dependencies_token_2,"https://") != NULL)
     {
-      //curl = curl_easy_init()
-      printf("This is URL -- Need to use CURL to get the date\n");
+      /*************************_________CURL_________*******************************************/
+    CURLcode res;
+    long filetime = -1;
+
+    curl = curl_easy_init();
+
+      if(!curl)
+      {
+        perror("CURL was unsucessful\n");
+      }
+      else
+      {
+
+
+        printf("CURL works-----------\n");
+        curl_easy_setopt(curl, CURLOPT_URL, dependencies_token_2);
+
+        //No download
+        curl_easy_setopt(curl, CURLOPT_NOBODY, 1L);
+
+        //asking for the filetime
+        curl_easy_setopt(curl, CURLOPT_FILETIME,1L);
+
+        res  = curl_easy_perform(curl);
+
+        if(CURLE_OK ==res)
+        {
+          printf("CURLE_OK is equal to res---------\n");
+          res = curl_easy_getinfo(curl,CURLINFO_FILETIME, &filetime);
+
+          if((CURLE_OK == res) && (filetime >= 0))
+          {
+            time_t file_time = (time_t) filetime;
+            printf("File time is:%li\n", file_time);
+            if(difftime(file_time,buffer_dependencies_time) >= 0)
+            {
+              printf("Comparison between file_time and other time\n");
+              buffer_dependencies_time = file_time;
+            }
+            else
+            {
+              printf("The file is old\n");
+            }
+          }
+          else
+          {
+            perror("Error\n");
+          }
+        }
+      }
+
+      curl_easy_cleanup(curl);
+
+
+    printf("This is URL -- Need to use CURL to get the date\n");
     }
     else
     {
@@ -143,22 +197,25 @@ while(dependencies_token != NULL)
         printf("The comparison\n");
         //printf("time--> %li\n",buffer_dependencies_time);
       }
-      printf("time prevails: %li\n",buffer_dependencies_time);
 
     }
-    printf("time prevails -- inside the else: %li\n",buffer_dependencies_time);
 
     printf("There is dependency\n");
     present = 1;
 
   }
-  printf("time prevails -- outside the big if: %li\n",buffer_dependencies_time);
+  printf("time prevails: %li\n",buffer_dependencies_time);
 
   //BELOW: if there is no dependencies then present == 1, hence, rebuilt
   dependencies_token = strtok(NULL, " \t");
 }
 
-if (present != 1 || difftime(dependencies_time,target_time) >= 0)
+
+
+
+printf("Absolute prevailing time is: %li\n",buffer_dependencies_time);
+
+if (present != 1 || difftime(buffer_dependencies_time,target_time) >= 0)
 {
   printf("Action line function will commence\n");
   //actionline()
