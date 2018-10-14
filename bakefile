@@ -1,7 +1,7 @@
 default_target : target.o dependency.o
  action line
 
-target.o : test.c https://
+target.o : test.c <https://blahblah.com> test2.c
   wow
 
 #I love skates

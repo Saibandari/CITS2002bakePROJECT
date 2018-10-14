@@ -9,30 +9,33 @@ struct stat target;
 struct stat depend;
 //CURL * curl;
 
-int target_count = 0;
+//int target_count = 0;
 int len = strlen(counter_var);
 FILE * file_counter_var = fopen("tokenstorage.txt","a"); // open a file to store the seperated arguments of each counter_var
 
 char * targetname = (char*)malloc(2);
 char * dependencies = (char*)malloc(2);
-char * dependencies_token_2 = (char*)malloc(2);
+char * dependencies_token_2 = (char*)calloc(2 ,sizeof(char*));
 //int * dependencies_time = (int*)malloc();
 
 time_t buffer_dependencies_time = 0;
 
 
 
-char * token = strtok(counter_var,":");
-
-while(token != NULL)
-{
+char * token = strtok(counter_var,":"); // this will get the targetname
+int token_len = strlen(token);
+//while(token != NULL)
+//{
+printf("target name is: %s\n",token);
 printf("Reading in targetname_f\n");
-printf("%i\n",target_count);
-  if(target_count == 0)//if it's reading the targetname
-  {
+printf("%d--\n",token_len);
+
+
+  //if(target_count == 0)//if it's reading the targetname
+  //{
     targetname = (char*) realloc(targetname,len * sizeof(char*));
 
-    if (strstr(token,default_targetname) == NULL) //if NULL no match
+    if (strstr(token,default_targetname) == NULL) //if NULL no match -- not default target
     {
       printf("Not Default target, COPY!!!!!\n");
       strcpy(targetname,token);
@@ -56,18 +59,26 @@ printf("%i\n",target_count);
       }
     }
 
-  }
+  //}
 
 
+dependencies = (char*)realloc(dependencies,len * sizeof(char*));
+//strcpy(dependencies,token);
+int j = 0;
+for(int i = token_len; i < len; i++)
+{
+  printf("%c\n",counter_var[i]);
+  strcpy(&dependencies[j],&counter_var[i]);
+  printf("%c\n",dependencies[j]);
+  j++;
+}
+//dependencies[len+1] = '\0';
+printf("---%s\n",dependencies);
 
 
+  //else// when it's reading the dependencies
+  //{
 
-
-
-  else// when it's reading the dependencies
-  {
-    dependencies = (char*)realloc(dependencies,len * sizeof(char*));
-    strcpy(dependencies,token);
 
     //USE ANOTHER STRTOK TO READ EACH dependencies
 
@@ -78,20 +89,22 @@ printf("%i\n",target_count);
 
 
 
-    while(dependencies_token != NULL)
+    while(dependencies != NULL)
     {
       printf("dependencies_token is:%s\n",dependencies_token);
 
+      //copying the dependecy to put bull byte
       dependencies_token_2 = (char*)realloc(dependencies_token_2,strlen(dependencies_token)*sizeof(char*));
       strcpy(dependencies_token_2,dependencies_token);
 
+      //putting null byte at the end
       dependencies_token_2[strlen(dependencies_token_2)] = '\0';
       printf("dependencies_token is:%s\n",dependencies_token);
 
-
-      if (strstr(dependencies_token_2,".0") != NULL || fopen(dependencies_token_2,"r") != NULL || strstr(dependencies_token_2,"file") != NULL || strstr(dependencies_token_2,"http") != NULL || strstr(dependencies_token_2,"https") != NULL) // if it is a target or a file
+//WHY DOES :// CUT THE STUFF I READ USING FGETS???????????????????????????
+      if (strstr(dependencies_token_2,".0") != NULL || fopen(dependencies_token_2,"r") != NULL || strstr(dependencies_token_2,"file://") != NULL || strstr(dependencies_token_2,"http://") != NULL || strstr(dependencies_token_2,"https://") != NULL) // if it is a target or a file
       {
-        if(strstr(dependencies_token_2,"file:/") != NULL || strstr(dependencies_token_2,"http") != NULL || strstr(dependencies_token_2,"https") != NULL)
+        if(strstr(dependencies_token_2,"file://") != NULL || strstr(dependencies_token_2,"http://") != NULL || strstr(dependencies_token_2,"https://") != NULL)
         //this is if it is for the URL, the obtaining time is different
         {
           //curl = curl_easy_init()
@@ -130,15 +143,15 @@ printf("%i\n",target_count);
     }
 
 
-  }
-  target_count++;
+  //}
+  //target_count++;
 
-  token = strtok(NULL,":");
-}
-target_count = 0;
+  //token = strtok(NULL,":");
+
+//target_count = 0;
 printf("&**%s**&\n&***%s***&\n",targetname,dependencies);
 fclose(file_counter_var);
-printf("The while loop finished\n");
+//printf("The while loop finished\n");
 
 
   /*if(fopen(default_targetname,"r") == 0)

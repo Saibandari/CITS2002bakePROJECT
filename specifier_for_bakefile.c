@@ -39,6 +39,7 @@ int targetline_counter = 0;
         b = 0;
 
         printf("This is a default targetline\n");
+        //below: creating a copy so then can be used just to abstract the default targetname
         char * buff_counter_var = (char*)malloc(strlen(counter_var)*sizeof(char*));
         strcpy(buff_counter_var,counter_var);
 
