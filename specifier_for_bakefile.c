@@ -9,12 +9,14 @@ void specifier()
 {
 char counter_var[15000];
 char * default_targetname = (char*) malloc (sizeof(char*));
-FILE * buffer_file = fopen("Bufferfile.txt","r");
-
+char * buff_counter_var_2 = (char*) malloc (sizeof(char*));
 
 int a;
 int b;
 int targetline_counter = 0;
+
+FILE * buffer_file = fopen("Bufferfile.txt","r");
+
 
 
 
@@ -47,14 +49,18 @@ int targetline_counter = 0;
         default_targetname = (char*)realloc(default_targetname,strlen(counter_var)*sizeof(char*));
         default_targetname = strtok(buff_counter_var, " :\t");
 
-        targetname_f(counter_var,default_targetname);
+        //below: copying another counter_var to another buffer to make sure it doesn't effect the counter var it self
+        buff_counter_var_2 = (char*)realloc(buff_counter_var_2,strlen(counter_var)*sizeof(char*));
+        strcpy(buff_counter_var_2,counter_var);
+
+        targetname_f(buff_counter_var_2,default_targetname);
         targetline_counter++;
       }
 
       //below: this one is for any other target line
       else if(strchr(counter_var,':') && strstr(counter_var,".o"))
       {
-        printf("&&&&&&&\n");
+        printf("This is a target line\n");
         printf("Counter var -->%s\n",counter_var);
         a = 1;
         b = 0;
@@ -63,7 +69,7 @@ int targetline_counter = 0;
         //PUT THE TARGETNAME FUNCTION HERE !!!!
         targetname_f(counter_var,default_targetname);
 
-        printf("This is a targetline\n");
+        //printf("This is a targetline\n");
         //printf("The targetline counter is: %i\n", targetline_counter);
         //when a = 1,b = 0, saying it is a target line and not an action line
 
