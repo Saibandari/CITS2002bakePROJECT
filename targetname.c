@@ -3,17 +3,21 @@
 #include "bake.h"
 #include "targetname.h"
 
-void targetname_f(char * buff_counter_var_2, char * default_targetname)
+int targetname_f(char * buff_counter_var_2, char * default_targetname)
 {
 bool present;
 
 struct stat target;
 struct stat depend;
 
+
 CURL * curl;
 
+int result;
+int target_name_does_not_exist;
 int len = strlen(buff_counter_var_2);
 int start = 0;
+
 
 
 char * targetname = (char*)malloc(2);
@@ -35,7 +39,6 @@ printf("%d--\n",token_len);
 //************************************TARGET*********************************************************
 
 targetname = (char*) realloc(targetname,len * sizeof(char*));
-
 if (strstr(token,default_targetname) == NULL) //if NULL no match -- not default target
 {
   printf("Not Default target, COPY!!!!!\n");
@@ -43,24 +46,31 @@ if (strstr(token,default_targetname) == NULL) //if NULL no match -- not default 
 
   targetname[strlen(targetname)-1] = '\0';
   printf("target name: %s--\n", targetname);
-
+  time_t target_time;
   //CHECK WHETHER THE FILE EXIST --> FIND THE MOD DATE --> T
   if (fopen(targetname,"r")!= NULL)
   {
+
+    target_name_does_not_exist = 0;
+
     stat(targetname,&target);
-    int target_time = target.st_mtime;
-    printf("%i\n",target_time);
+    target_time = target.st_mtime;
+    printf("%li\n",target_time);
 
   }
   //IF NOT EXIST --> rebuild
   else
   {
-    //actionline();
-    printf("Target line does not represent a file in current directory\n");
+    // ACTION LINE
+    target_name_does_not_exist = 1;
+    /*printf("Target line does not represent a file in current directory\n");
+    gettimeofday(&tv,NULL);
+
+    target_time = tv.tv_sec;*/
 
   }
 }
-printf("target time is: %i\n",target_time);
+printf("target time is: %li\n",target_time);
 
 
 
@@ -215,10 +225,15 @@ while(dependencies_token != NULL)
 
 printf("Absolute prevailing time is: %li\n",buffer_dependencies_time);
 
-if (present != 1 || difftime(buffer_dependencies_time,target_time) >= 0)
+if (present != 1 || difftime(buffer_dependencies_time,target_time) >= 0 || target_name_does_not_exist == 1)
 {
   printf("Action line function will commence\n");
+  result = 1;
   //actionline()
+}
+else
+{
+  result = 0;
 }
 
   //}
@@ -256,5 +271,6 @@ if (present != 1 || difftime(buffer_dependencies_time,target_time) >= 0)
 
   // when the targetname are not the default targetname
 
+return result;
 
 }

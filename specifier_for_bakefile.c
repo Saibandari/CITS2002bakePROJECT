@@ -33,6 +33,7 @@ FILE * buffer_file = fopen("Bufferfile.txt","r");
     else
     {
 
+
       //below: DEFAULT TARGETLINE --> the first target line
       if(strchr(counter_var,':') && targetline_counter == 0)
       {
@@ -58,7 +59,7 @@ FILE * buffer_file = fopen("Bufferfile.txt","r");
       }
 
       //below: this one is for any other target line
-      else if(strchr(counter_var,':') && strstr(counter_var,".o"))
+      else if((strchr(counter_var,':') && strstr(counter_var,".o")) || (strchr(counter_var,':') && strstr(counter_var,"clean")))
       {
         printf("This is a target line\n");
         printf("Counter var -->%s\n",counter_var);
@@ -88,6 +89,7 @@ FILE * buffer_file = fopen("Bufferfile.txt","r");
       {
         a = 0;
         b = 1;
+
 
         //a = 0, b = 1, stating that this line is an action line and not a target line
         printf("%s <--This is an action line\n", counter_var);
