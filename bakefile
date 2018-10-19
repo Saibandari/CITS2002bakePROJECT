@@ -1,10 +1,13 @@
 default_target : target.o dependency.o
- action line
+  action line
 
 #I love bacon
 
 target.o : test.c http://teaching.csse.uwa.edu.au/units/CITS2002/workshops/myls.c test2.c
   echo Hello Baby!
+  my man
+  Hello
+  
 Bacon
 
 NAME = HANSEL
