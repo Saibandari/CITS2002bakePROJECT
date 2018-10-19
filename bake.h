@@ -17,9 +17,8 @@ int result;
 void specifier();
 void comment_check(FILE*);
 void read_bakefile();
-void actionline();
-
-int targetname_f(char * buff_counter_var_2,char * default_targetname);
+void actionline(char * counter_var, int result);
+void targetname_f(char * buff_counter_var_2,char * default_targetname);
 
 const char * targetname;
 
@@ -29,3 +28,15 @@ time_t buffer_dependencies_time;
 time_t file_time;
 
 FILE * open_bakefile();
+
+
+typedef struct
+{
+  char * name;
+  char * defaultname;
+  char ** dependencies;
+  char ** actions;
+
+}TARGETLINE;
+
+TARGETLINE * line;

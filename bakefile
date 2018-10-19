@@ -1,13 +1,11 @@
 default_target : target.o dependency.o
  action line
 
+#I love bacon
+
 target.o : test.c http://teaching.csse.uwa.edu.au/units/CITS2002/workshops/myls.c test2.c
-  wow
-
-#I love skates
-
+  echo Hello Baby!
 Bacon
 
 NAME = HANSEL
-
   garbage
