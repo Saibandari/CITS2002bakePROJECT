@@ -13,7 +13,6 @@ void counter()
   int a;
   int b;
 
-  TARGETLINE * line = NULL;
 
   line = malloc(1 * sizeof(TARGETLINE));// giving initial size to the structure array
 
@@ -37,7 +36,8 @@ void counter()
         action_line_counter = 0;
         printf("Entering if\n");
 
-        line = realloc(line,(target_line_counter+2) * sizeof(TARGETLINE));
+        line = realloc(line,(target_line_counter+1) * sizeof(TARGETLINE));
+
         line[target_line_counter].actions = malloc(1 * sizeof(char*));
 
 
@@ -94,8 +94,9 @@ void counter()
         }
 
         printf("J is: %i\n",j);
+        printf("target_line_counter: %i\n",target_line_counter);
 
-        line[target_line_counter].dependencies = malloc(j * sizeof(char*));
+        line[target_line_counter].dependencies = malloc((j+1) * sizeof(char*));
 
 
         //below: counts how many targetlines are there

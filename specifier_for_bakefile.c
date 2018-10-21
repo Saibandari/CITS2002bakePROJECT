@@ -9,18 +9,13 @@
 void specifier()
 {
 char counter_var[15000];
-//char * default_targetname =  malloc (sizeof(char*));
-//char * buff_counter_var_2 = malloc (sizeof(char*));
-//char * targetname = malloc(2);
 
 int i = 0; // only to determine whether the target line contains default target name
 int a;
 int b;
-//int target_counter = 1;
 
 FILE * buffer_file = fopen("Bufferfile.txt","r");
 
-TARGETLINE *line;
 
 // look for the name in the in all of the array
 
@@ -45,7 +40,7 @@ TARGETLINE *line;
         printf("This is a target line, when i = 0, then it is the default target\n");
 
         // giving more space for the array as now it has more element in the array
-        line = realloc(line,(i+1) * sizeof(TARGETLINE));
+        //line = realloc(line,(i+1) * sizeof(TARGETLINE));
 
         //below: when a = 1,b = 0, saying it is a target line and not an action line
         a = 1;
@@ -73,8 +68,12 @@ TARGETLINE *line;
           //below: the first one tokenized will be the targetname
           if(target_or_dependencies == 0)
           {
-            line[i].name = (char*) malloc(strlen(token_target) * sizeof(char));
-            strcpy(line[i].name,token_target);
+            printf("token_target: %s\n", token_target);
+            printf("i:%i\n",i);
+            printf("before the malloc\n");
+
+            line[i].name = malloc(strlen(token_target) * sizeof(char));
+            line[i].name = token_target;
             printf("--%s\n",line[i].name);
             printf("buff_counter_var_target: %s\n",buff_counter_var_target);
           }
@@ -96,7 +95,9 @@ TARGETLINE *line;
               printf("i: %i\nj: %i\n",i,j);
 
               line[i].dependencies[j] = malloc(strlen(token_target) * sizeof(char));
+              printf("Test\n");
               line[i].dependencies[j] = token_target;
+
               printf("line[%i].dependencies[%i]: --%s--\n",i,j,line[i].dependencies[j]);
 
               j++;
@@ -119,7 +120,6 @@ TARGETLINE *line;
 
 
 
-        free(buff_counter_var_target);
 
         //below: it will iterate if the line we read was a targetline -- counting how many targets are there
         i++;
@@ -219,7 +219,7 @@ TARGETLINE *line;
   }
   printf("test --- the line[0].name is: %s\n",line[0].name);
 
-  printf("test --- the line[1].dependencies[1] is: %s\n",line[1].dependencies[1]);
+  printf("test --- the line[0].dependencies[1] is: %s\n",line[1].dependencies[3]);
   printf("test --- the line[1].dependencies[0] is: %s\n",line[1].dependencies[0]);
 
 
