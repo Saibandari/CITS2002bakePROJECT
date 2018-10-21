@@ -15,6 +15,7 @@
 int result;
 
 void specifier();
+void counter();
 void comment_check(FILE*);
 void read_bakefile();
 void actionline(char * counter_var, int result);

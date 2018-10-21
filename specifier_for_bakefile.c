@@ -22,8 +22,6 @@ FILE * buffer_file = fopen("Bufferfile.txt","r");
 
 TARGETLINE *line;
 
-line = malloc(1 * sizeof(TARGETLINE));// giving initial size to the structure array
-
 // look for the name in the in all of the array
 
   while(1)
@@ -39,95 +37,12 @@ line = malloc(1 * sizeof(TARGETLINE));// giving initial size to the structure ar
     else
     {
 
-      //-----------------------------------------------------------DEFAULT TARGET------------------------------------------------------
-      //below: DEFAULT TARGETLINE --> the first target line
-      if(strchr(counter_var,':') && i == 0)
-      {
-        printf("counter_var is: %s\n",counter_var);
-
-        line = realloc(line,(i+1) * sizeof(TARGETLINE)); // giving more space for the array as now it has more element in the array
-
-
-        a = 1;
-        b = 0;
-        printf("This is a default targetline\n");
-
-
-        //---------------------------------------------------default target name----------------------------------------------
-        //below: creating a copy so then can be used just to abstract the default targetname
-        char * buff_counter_var_default_target = malloc(strlen(counter_var)*sizeof(char));
-        strcpy(buff_counter_var_default_target,counter_var);
-
-
-        //below: getting just the targetname before the ":"
-        char * token_target = strtok(buff_counter_var_default_target, " \t");
-        int target_or_dependencies = 0;
-        int first_colon = 0;
-        int j = 0; // this is for the dependencies -- how many elements in the dependencies array
-        action_counter = 0; // setting actions counter --> 0 (to know how many actions / target)
-
-        while(token_target != NULL)
-        {
-
-          line[i].dependencies = malloc(1 * sizeof(char*));
-
-          //below: the first one tokenized will be the targetname
-          if(target_or_dependencies == 0)
-          {
-            line[i].defaultname = (char*) malloc(strlen(token_target) * sizeof(char));
-            strcpy(line[i].defaultname,token_target);
-            printf("--%s\n",line[i].defaultname);
-            printf("buff_counter_var_default_target: %s\n",buff_counter_var_default_target);
-          }
-
-          //--------------------------------------------dependencies--------------------------------------------
-          //below: second being tokenized is the dependencies
-          else
-          {
-            printf("the dependencies:%s\n",token_target);
-
-            //below: if FIRST COLON, we want to ignore it
-            if(strstr(token_target,":") && first_colon == 0)
-            {
-              first_colon++;
-            }
-            else
-            {
-              line[i].dependencies = realloc(line[i].dependencies,(j+1) * sizeof(char*));
-              line[i].dependencies[j] = malloc(strlen(token_target) * sizeof(char));
-              strcpy(line[i].dependencies[j],token_target);
-              printf("line[i].dependencies[j]: %s\n",line[i].dependencies[j]);
-              printf("i: %i\nj: %i\n",i,j);
-              j++;
-
-            }
-
-            //below: j represent the number of dependencies on a target line
-
-          }
-
-
-
-          token_target = strtok(NULL," \t");
-          target_or_dependencies++;
-        }
-        free(buff_counter_var_default_target);
-
-
-        i++;
-
-        //below: gicing initial memory to actions array
-        line[i-1].actions = malloc(1 * sizeof(char*));
-
-      }
-
-
       //-----------------------------------------------------------TARGET------------------------------------------------------------
 
       //below: this one is for any other target line
-      else if(strchr(counter_var,':'))
+      if(strchr(counter_var,':'))
       {
-        printf("This is a target line\n");
+        printf("This is a target line, when i = 0, then it is the default target\n");
 
         // giving more space for the array as now it has more element in the array
         line = realloc(line,(i+1) * sizeof(TARGETLINE));
@@ -151,10 +66,9 @@ line = malloc(1 * sizeof(TARGETLINE));// giving initial size to the structure ar
         int j = 0; // this is for the dependencies -- how many elements in the dependencies array
 
 
+
         while(token_target != NULL)
         {
-
-          line[i].dependencies = malloc(1 * sizeof(char*));
 
           //below: the first one tokenized will be the targetname
           if(target_or_dependencies == 0)
@@ -175,16 +89,21 @@ line = malloc(1 * sizeof(TARGETLINE));// giving initial size to the structure ar
             {
               first_colon++;
             }
+            //below: after the first colon --> dependencies
             else
             {
-
-              line[i].dependencies = realloc(line[i].dependencies,(j+1) * sizeof(char*));
-              line[i].dependencies[j] = malloc(strlen(token_target) * sizeof(char));
-              strcpy(line[i].dependencies[j],token_target);
-              printf("line[i].dependencies[j]: %s\n",line[i].dependencies[j]);
+              printf("allocation\n");
               printf("i: %i\nj: %i\n",i,j);
+
+              line[i].dependencies[j] = malloc(strlen(token_target) * sizeof(char));
+              line[i].dependencies[j] = token_target;
+              printf("line[%i].dependencies[%i]: --%s--\n",i,j,line[i].dependencies[j]);
+
               j++;
             }
+
+            //printf("second line[i].dependencies[j]: %s\n",line[i].dependencies[j]);
+
 
 
           }
@@ -192,6 +111,16 @@ line = malloc(1 * sizeof(TARGETLINE));// giving initial size to the structure ar
           token_target = strtok(NULL," \t");
           target_or_dependencies++;
         }
+        printf("We are outside of the loop\n");
+        printf("i: %i     j: %i\n",i,j);
+
+        printf("test --- the line[0].name is: %s\n",line[0].name);
+
+        printf("test --- the line[0].dependencies[1] is: %s\n",line[0].dependencies[1]);
+        printf("test --- the line[0].dependencies[0] is: %s\n",line[0].dependencies[0]);
+
+
+
 
 
         free(buff_counter_var_target);
@@ -199,7 +128,6 @@ line = malloc(1 * sizeof(TARGETLINE));// giving initial size to the structure ar
         //below: it will iterate if the line we read was a targetline -- counting how many targets are there
         i++;
         //below: giving memory to the actions array;
-        line[i-1].actions = malloc(1 * sizeof(char*));
 
       }
 
@@ -229,15 +157,53 @@ line = malloc(1 * sizeof(TARGETLINE));// giving initial size to the structure ar
 
 
 
+        //still have to be able to seperate between the option and the commands
+
+        /*int do_not_print = 0;
+        int exit_always_success = 0;
+
+        char * location_at = strchr(counter_var,'@'); //by default it should print out before execution, but this makes it not printing
+        char * location_DASH = strchr(counter_var,'-');//by default it should use exit status for each action, but with this, exist status will always be successfull
+        if(location_at != NULL && location_DASH == NULL)
+        {
+          do_not_print = 1;
+          exit_always_success = 0;
+          int start = (location_at - counter_var);
+          printf("start: %i\n",start);
+
+        }
+
+        else if(location_DASH != NULL && location_at == NULL)
+        {
+          do_not_print = 0;
+          exit_always_success = 1;
+
+        }
+        else if(location_DASH == NULL && location_at == NULL)
+        {
+          do_not_print = 0;
+          exit_always_success = 0;
+        }
+        else
+        {
+          do_not_print = 0;
+          exit_always_success = 0;
+        }*/
+
+
+
+
+
+
+
 
         //below: reallocating memory since more actions going to be read
         printf("action_counter: %i\ni: %i\n",action_counter,i);
-        line[i-1].actions = realloc(line[i-1].actions,(action_counter+1) * sizeof(char*));
         line[i-1].actions[action_counter] = malloc(strlen(counter_var));
-        strcpy(line[i-1].actions[action_counter],counter_var);
+        line[i-1].actions[action_counter] = counter_var;
 
         printf("line[i-1].actions[action_counter] is:%s\n",line[i-1].actions[action_counter]);
-        
+
         //below: this is to count how many actions realted to a target
         action_counter++;
       }

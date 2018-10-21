@@ -2,6 +2,7 @@
 
 #include "bake.h"
 
+TARGETLINE * line;
 
 void read_bakefile()
 {
@@ -13,7 +14,8 @@ void read_bakefile()
  {
    FILE * open_file = open_bakefile();
    comment_check(open_file);
+   counter();
    specifier();
-   
+
  }
 }

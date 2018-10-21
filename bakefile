@@ -3,12 +3,18 @@ default_target : target.o dependency.o
 
 #I love bacon
 
-target.o : test.c http://teaching.csse.uwa.edu.au/units/CITS2002/workshops/myls.c test2.c
-  echo Hello Baby!
+target.o : test.c http://teaching.csse.uwa.edu.au/units/CITS2002/workshops/myls.c test2.c test3.c
+
+  @ echo Hello Baby!
   my man
   Hello
-  
+
 Bacon
 
 NAME = HANSEL
   garbage
+
+
+dependecy.o
+  -hello my name is HANSEL
+  this one is the second line
