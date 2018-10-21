@@ -114,10 +114,6 @@ TARGETLINE *line;
         printf("We are outside of the loop\n");
         printf("i: %i     j: %i\n",i,j);
 
-        printf("test --- the line[0].name is: %s\n",line[0].name);
-
-        printf("test --- the line[0].dependencies[1] is: %s\n",line[0].dependencies[1]);
-        printf("test --- the line[0].dependencies[0] is: %s\n",line[0].dependencies[0]);
 
 
 
@@ -219,6 +215,14 @@ TARGETLINE *line;
       }
 
     }
+
   }
+  printf("test --- the line[0].name is: %s\n",line[0].name);
+
+  printf("test --- the line[1].dependencies[1] is: %s\n",line[1].dependencies[1]);
+  printf("test --- the line[1].dependencies[0] is: %s\n",line[1].dependencies[0]);
+
+
+
   fclose(buffer_file);
 }
