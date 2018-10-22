@@ -3,26 +3,24 @@
 #include "bake.h"
 #include "targetname.h"
 
-int targetname_f(char * buff_counter_var_2, char * default_targetname)
+void targetname_f()
 {
-bool present;
 
 struct stat target;
-struct stat depend;
 
+/*bool present;
+
+
+struct stat depend;
+*/
 
 CURL * curl;
 
-int result;
+/*int result;
 int target_name_does_not_exist;
 int len = strlen(buff_counter_var_2);
 int start = 0;
 
-
-
-char * targetname = (char*)malloc(2);
-char * dependencies = (char*)malloc(2);
-char * dependencies_token_2 = (char*)calloc(2 ,sizeof(char*));
 
 
 
@@ -34,12 +32,209 @@ int token_len = strlen(token);
 printf("target name is: %s\n",token);
 printf("Reading in targetname_f\n");
 printf("%d--\n",token_len);
+*/
 
 
 //************************************TARGET*********************************************************
 
-targetname = (char*) realloc(targetname,len * sizeof(char*));
-if (strstr(token,default_targetname) == NULL) //if NULL no match -- not default target
+    
+
+    printf("targetname: --%s--\n",targetname);
+    printf("target_line_counter is: %i\n",trg[0].num);
+    printf("line[0].name is: --%s--\n",line[0].name);
+    printf("line[1].name is: -%s-\n",line[1].name);
+    printf("line[2].name is: -%s-\n",line[2].name);
+
+
+
+    if(strcmp(targetname,"default_target")==0)
+    {
+      targetname = line[0].name;
+      printf("default Targetname: %s\n",targetname);
+    }
+
+    if (fopen(targetname,"r")!= NULL) // targetname represents a file
+    {
+
+      time_t dependencies_time;
+
+      stat(targetname,&target);
+      target_time = target.st_mtime;
+      printf("%li\n",target_time);
+
+      for(int i = 0; i < trg[0].num; i++)
+      {// to iterate through all of the target names
+        printf("Hello%i\n",i);
+        int d_counter = 0;
+
+        if( strcmp(line[i].name, targetname) == 0)
+        {// this if statement is to see through what is inside this target structure
+
+          for(int j = 0; j < line[i].num_dependencies; j++)
+          {// iterating through the dependencies of a target we are looking at
+
+
+            // below: testing whether these dependecies are actually dependencies
+            if(strstr(line[i].dependencies[j],"file://") != NULL || strstr(line[i].dependencies[j],"http://") != NULL || strstr(line[i].dependencies[j],"https://") != NULL)
+            {
+              //below: finding the mtime for URL
+              CURLcode res;
+              long filetime = -1;
+
+              curl = curl_easy_init();
+
+                 if(!curl)
+                 {
+                   perror("CURL was unsucessful\n");
+                 }
+                 else
+                 {
+
+
+                   printf("CURL works-----------\n");
+                   curl_easy_setopt(curl, CURLOPT_URL, line[i].dependencies[j]);
+
+                   //No download
+                   curl_easy_setopt(curl, CURLOPT_NOBODY, 1L);
+
+                   //asking for the filetime
+                   curl_easy_setopt(curl, CURLOPT_FILETIME,1L);
+
+                   res  = curl_easy_perform(curl);
+
+                   if(CURLE_OK ==res)
+                   {
+                     printf("CURLE_OK is equal to res---------\n");
+                     res = curl_easy_getinfo(curl,CURLINFO_FILETIME, &filetime);
+
+                     if((CURLE_OK == res) && (filetime >= 0))
+                     {
+                       time_t file_time = (time_t) filetime;
+                       printf("File time is:%li\n", file_time);
+
+                       if(difftime(file_time,buffer_dependencies_time) >= 0)
+                       {
+                         printf("Comparison between file_time and other time\n");
+                         buffer_dependencies_time = file_time;
+                       }
+                       else
+                       {
+                         printf("The file is old\n");
+                       }
+                     }
+                     else
+                     {
+                       perror("Error\n");
+                     }
+                   }
+                 }
+
+                 curl_easy_cleanup(curl);
+
+                d_counter++;
+                printf("This is an URL\n");
+               printf("This is URL -- Need to use CURL to get the date\n");
+            }
+
+
+
+            else if (fopen(line[i].dependencies[j],"r") != NULL)
+            {
+
+              stat(line[i].dependencies[j],&target);
+              dependencies_time = target.st_mtime;
+              printf("%li\n",dependencies_time);
+              if(difftime(dependencies_time,buffer_dependencies_time) >= 0)
+              {
+                printf("Comparison between file_time and other time\n");
+                buffer_dependencies_time = dependencies_time;
+              }
+              else
+              {
+                printf("The file is old\n");
+              }
+
+
+
+              d_counter++;
+              printf("This is file on disk: %s\n",line[i].dependencies[j]);
+            }
+            else
+            {
+              for ( int ii = 0; ii < trg[0].num ; ii++)
+              {
+                if (strcmp(line[i].dependencies[j],line[ii].name) == 0)
+                {
+
+                  stat(line[i].dependencies[j],&target);
+                  dependencies_time = target.st_mtime;
+                  printf("%li\n",dependencies_time);
+
+                  if(difftime(dependencies_time,buffer_dependencies_time) >= 0)
+                  {
+                    printf("Comparison between file_time and other time\n");
+                    buffer_dependencies_time = dependencies_time;
+                  }
+                  else
+                  {
+                    printf("The file is old\n");
+                  }
+
+                  d_counter++;
+                  printf("This one recognised that it's a target name\n");
+                  printf("line[i].dependencies[j]: --%s--\n",line[i].dependencies[j]);
+                }
+                else
+                {
+                  printf("line[i].dependencies[j]: --%s--\n",line[i].dependencies[j]);
+                  perror("Not a dependecy\n");
+                }
+              }
+            }
+          }
+
+          if (d_counter == 0)
+          {
+            printf("No dependencies\n");
+            printf("i = %i\n",i);
+            actionline(i);
+          }
+          else
+          {
+            printf("There is dependencies\n");
+            //below: we are checking for updates
+
+            if(difftime(buffer_dependencies_time,target_time) >= 0)
+            {
+              printf("Need to be updated\n");
+              printf("i => %i\n",i);
+              actionline(i);
+
+            }
+          }
+
+
+
+        } // if statement when the file exist
+      } // for loop to go through each dependencies
+
+    }
+
+    //IF NOT EXIST --> rebuild
+    else
+    {
+      //actionline();
+      printf("ationline here\n");
+    }
+
+}
+
+
+
+
+
+//targetname = (char*) realloc(targetname,len * sizeof(char*));
+/*if (strstr(token,default_targetname) == NULL) //if NULL no match -- not default target
 {
   printf("Not Default target, COPY!!!!!\n");
   strcpy(targetname,token);
@@ -47,36 +242,17 @@ if (strstr(token,default_targetname) == NULL) //if NULL no match -- not default 
   targetname[strlen(targetname)-1] = '\0';
   printf("target name: %s--\n", targetname);
   time_t target_time;
+
   //CHECK WHETHER THE FILE EXIST --> FIND THE MOD DATE --> T
-  if (fopen(targetname,"r")!= NULL)
-  {
 
-    target_name_does_not_exist = 0;
-
-    stat(targetname,&target);
-    target_time = target.st_mtime;
-    printf("%li\n",target_time);
-
-  }
-  //IF NOT EXIST --> rebuild
-  else
-  {
-    // ACTION LINE
-    target_name_does_not_exist = 1;
-    /*printf("Target line does not represent a file in current directory\n");
-    gettimeofday(&tv,NULL);
-
-    target_time = tv.tv_sec;*/
-
-  }
 }
 printf("target time is: %li\n",target_time);
-
+*/
 
 
 //************************************DEPENDENCIES*********************************************************
 
-dependencies = (char*)realloc(dependencies,len * sizeof(char*));
+/*dependencies = (char*)realloc(dependencies,len * sizeof(char*));
 //strcpy(dependencies,token);
 //printf("**********%c\n",buff_counter_var_2[token_len]);
 printf("We are reading between:%i_____&_____%i\n",token_len,len);
@@ -135,62 +311,13 @@ while(dependencies_token != NULL)
     //this is if it is for the URL, the obtaining time is different
     if(strstr(dependencies_token_2,"file://") != NULL || strstr(dependencies_token_2,"http://") != NULL || strstr(dependencies_token_2,"https://") != NULL)
     {
-      /*************************_________CURL_________*******************************************/
-    CURLcode res;
-    long filetime = -1;
-
-    curl = curl_easy_init();
-
-      if(!curl)
-      {
-        perror("CURL was unsucessful\n");
-      }
-      else
-      {
 
 
-        printf("CURL works-----------\n");
-        curl_easy_setopt(curl, CURLOPT_URL, dependencies_token_2);
-
-        //No download
-        curl_easy_setopt(curl, CURLOPT_NOBODY, 1L);
-
-        //asking for the filetime
-        curl_easy_setopt(curl, CURLOPT_FILETIME,1L);
-
-        res  = curl_easy_perform(curl);
-
-        if(CURLE_OK ==res)
-        {
-          printf("CURLE_OK is equal to res---------\n");
-          res = curl_easy_getinfo(curl,CURLINFO_FILETIME, &filetime);
-
-          if((CURLE_OK == res) && (filetime >= 0))
-          {
-            time_t file_time = (time_t) filetime;
-            printf("File time is:%li\n", file_time);
-            if(difftime(file_time,buffer_dependencies_time) >= 0)
-            {
-              printf("Comparison between file_time and other time\n");
-              buffer_dependencies_time = file_time;
-            }
-            else
-            {
-              printf("The file is old\n");
-            }
-          }
-          else
-          {
-            perror("Error\n");
-          }
-        }
-      }
-
-      curl_easy_cleanup(curl);
+      //-----------------------------_________CURL_________--------------------------------------------
 
 
-    printf("This is URL -- Need to use CURL to get the date\n");
-    }
+
+
     else
     {
 
@@ -235,42 +362,4 @@ else
 {
   result = 0;
 }
-
-  //}
-  //target_count++;
-
-  //token = strtok(NULL,":");
-
-//target_count = 0;
-
-
-//printf("The while loop finished\n");
-
-
-  /*if(fopen(default_targetname,"r") == 0)
-  {
-    printf("The file is not found\n");
-
-  }
-  else // there is a file in current directory
-  {
-    if (stat(default_targetname, &trgt) != 0)
-    {
-      printf("Stat couldn't be preformed\n");
-    }
-    else // can be read
-    {
-      printf("Haiii\n");
-
-      //int dependencies_tm = .st_mtime;
-      //printf("Mod time is:%i\nAccess time is:%i\n", tm,tma);
-    }
-  }*/
-
-
-
-  // when the targetname are not the default targetname
-
-return result;
-
-}
+*/

@@ -14,8 +14,9 @@ void read_bakefile()
  {
    FILE * open_file = open_bakefile();
    comment_check(open_file);
-   counter();
-   specifier();
+   counter();//allocates memory to the strutures elements
+   specifier();//assign to the variables in struct
+   targetname_f();
 
  }
 }

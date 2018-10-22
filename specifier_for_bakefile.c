@@ -33,7 +33,7 @@ FILE * buffer_file = fopen("Bufferfile.txt","r");
     {
 
       //-----------------------------------------------------------TARGET------------------------------------------------------------
-
+      counter_var[strlen(counter_var)-1] = '\0';
       //below: this one is for any other target line
       if(strchr(counter_var,':'))
       {
@@ -54,6 +54,7 @@ FILE * buffer_file = fopen("Bufferfile.txt","r");
 
         //below: getting just the targetname before the ":"
         printf("buff_counter_var_default_target: %s\n",buff_counter_var_target);
+
         char * token_target = strtok(buff_counter_var_target, " \t");
         int target_or_dependencies = 0;
         int first_colon = 0;
@@ -71,6 +72,12 @@ FILE * buffer_file = fopen("Bufferfile.txt","r");
             printf("token_target: %s\n", token_target);
             printf("i:%i\n",i);
             printf("before the malloc\n");
+
+            if (strchr(token_target,':') != NULL)
+            {
+              //below: elimiating the ':' at the end if there is no space
+              token_target[strlen(token_target)-1] = '\0';
+            }
 
             line[i].name = malloc(strlen(token_target) * sizeof(char));
             line[i].name = token_target;
@@ -96,9 +103,12 @@ FILE * buffer_file = fopen("Bufferfile.txt","r");
 
               line[i].dependencies[j] = malloc(strlen(token_target) * sizeof(char));
               printf("Test\n");
+              //token_target[strlen(token_target)] = '\0';
               line[i].dependencies[j] = token_target;
+              //line[i].dependencies[j][strlen(token_target)] = '\0';
 
               printf("line[%i].dependencies[%i]: --%s--\n",i,j,line[i].dependencies[j]);
+
 
               j++;
             }
@@ -123,7 +133,7 @@ FILE * buffer_file = fopen("Bufferfile.txt","r");
 
         //below: it will iterate if the line we read was a targetline -- counting how many targets are there
         i++;
-        //below: giving memory to the actions array;
+
 
       }
 
@@ -149,7 +159,7 @@ FILE * buffer_file = fopen("Bufferfile.txt","r");
         //a = 0, b = 1, stating that this line is an action line and not a target line
         a = 0;
         b = 1;
-        //int ln = 0;
+
 
 
 
@@ -195,8 +205,11 @@ FILE * buffer_file = fopen("Bufferfile.txt","r");
 
         //below: reallocating memory since more actions going to be read
         printf("action_counter: %i\ni: %i\n",action_counter,i);
-        line[i-1].actions[action_counter] = malloc(strlen(counter_var));
-        line[i-1].actions[action_counter] = counter_var;
+        printf("counter_var: %s\n",counter_var);
+        line[i-1].actions[action_counter] = malloc(strlen(counter_var)*sizeof(char));
+        strcpy(line[i-1].actions[action_counter],counter_var);
+
+
 
         printf("line[i-1].actions[action_counter] is:%s\n",line[i-1].actions[action_counter]);
 
@@ -222,7 +235,7 @@ FILE * buffer_file = fopen("Bufferfile.txt","r");
   printf("test --- the line[0].dependencies[1] is: %s\n",line[1].dependencies[3]);
   printf("test --- the line[1].dependencies[0] is: %s\n",line[1].dependencies[0]);
 
-
+  printf("test --- the line[1].dependencies[0][1] is: %c\n",line[1].dependencies[0][1]);
 
   fclose(buffer_file);
 }

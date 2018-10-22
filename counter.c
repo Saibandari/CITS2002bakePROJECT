@@ -4,7 +4,6 @@
 void counter()
 {
 
-
   char counter_var[15000];
 
   FILE * buffer_file = fopen("Bufferfile.txt","r");
@@ -12,6 +11,7 @@ void counter()
   int target_line_counter = 0;
   int a;
   int b;
+
 
 
   line = malloc(1 * sizeof(TARGETLINE));// giving initial size to the structure array
@@ -98,6 +98,13 @@ void counter()
 
         line[target_line_counter].dependencies = malloc((j+1) * sizeof(char*));
 
+        //below: giving space to the amount of dependencies per target
+        line[target_line_counter].num_dependencies = (int)malloc(sizeof(int));
+        line[target_line_counter].num_dependencies = j;
+
+        //below: giving space to amount of actions per target
+        line[target_line_counter].num_actions = (int)malloc(sizeof(int));
+
 
         //below: counts how many targetlines are there
         target_line_counter++;
@@ -122,14 +129,17 @@ void counter()
       // If previous line is a targetline / an action line -> true
       {
         printf("%s <--This is an action line\n", counter_var);
+        printf("target counter: %i\n",target_line_counter);
 
         //a = 0, b = 1, stating that this line is an action line and not a target line
         a = 0;
         b = 1;
 
-        line[target_line_counter-1].actions = realloc(line[target_line_counter-1].actions,(action_line_counter+1) * sizeof(char*));
+        line[target_line_counter-1].actions = realloc(line[target_line_counter-1].actions,(action_line_counter) * sizeof(char*));
 
         action_line_counter++;
+        line[target_line_counter-1].num_actions = action_line_counter;
+
       }
 
 
@@ -142,10 +152,16 @@ void counter()
         printf("%s <--This is nothing\n",counter_var);
       }
 
+      printf("target_line_counter: %i\n",target_line_counter);
     }
 
 
   }
+
+  trg = malloc(sizeof(TARGET));
+  trg[0].num = (int) malloc(target_line_counter * sizeof(int));
+  trg[0].num = target_line_counter;
+  printf("outside of the while loop--> target_num: %i\n",trg[0].num);
 
 
 
