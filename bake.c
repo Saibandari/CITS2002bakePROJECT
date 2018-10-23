@@ -8,7 +8,7 @@ int main(int argc, char const *argv[])
 	//FILE * inputFILE = fopen("InputBuffer.txt","a"); // to store the arguments so then can be read using functions
 	char ** options = malloc(sizeof(char*));
 	int cmp = 1;
-	char df[23]="default_target";
+	char df[23]="default target";
 
 
 	printf("Before the targetname allocation\n");

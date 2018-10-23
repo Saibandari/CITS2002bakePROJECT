@@ -7,8 +7,8 @@ structure.h : test.c http://teaching.csse.uwa.edu.au/units/CITS2002/workshops/my
 
 
   @ echo Hello Baby!
-  my man
-  Hello
+  @my man
+  @Hello
 
 Bacon
 

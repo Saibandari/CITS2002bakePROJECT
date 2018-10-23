@@ -17,6 +17,8 @@ void read_bakefile()
    counter();//allocates memory to the strutures elements
    specifier();//assign to the variables in struct
    targetname_f();
+   remove("Bufferfile.txt");
+
 
  }
 }

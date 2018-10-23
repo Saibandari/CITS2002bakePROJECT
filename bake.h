@@ -21,7 +21,7 @@ void specifier();
 void counter();
 void comment_check(FILE*);
 void read_bakefile();
-void actionline(int papi);
+void actionline(int papi,int mamiS);
 void targetname_f();
 
 char * targetname;

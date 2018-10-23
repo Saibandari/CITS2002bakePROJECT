@@ -5,7 +5,7 @@
 
 void targetname_f()
 {
-
+printf("WE ARE IN TARGETNAME FUNCTION\n");
 struct stat target;
 
 /*bool present;
@@ -37,7 +37,7 @@ printf("%d--\n",token_len);
 
 //************************************TARGET*********************************************************
 
-    
+
 
     printf("targetname: --%s--\n",targetname);
     printf("target_line_counter is: %i\n",trg[0].num);
@@ -47,7 +47,7 @@ printf("%d--\n",token_len);
 
 
 
-    if(strcmp(targetname,"default_target")==0)
+    if(strcmp(targetname,"default target")==0)
     {
       targetname = line[0].name;
       printf("default Targetname: %s\n",targetname);
@@ -197,7 +197,11 @@ printf("%d--\n",token_len);
           {
             printf("No dependencies\n");
             printf("i = %i\n",i);
-            actionline(i);
+
+            for(int ii = 0; ii < line[i].num_actions;ii++)
+            {
+              actionline(i,ii);
+            }
           }
           else
           {
@@ -208,8 +212,12 @@ printf("%d--\n",token_len);
             {
               printf("Need to be updated\n");
               printf("i => %i\n",i);
-              actionline(i);
 
+              for(int ii = 0; ii < line[i].num_actions;ii++)
+              {
+                actionline(i,ii);
+
+              }
             }
           }
 
@@ -223,9 +231,25 @@ printf("%d--\n",token_len);
     //IF NOT EXIST --> rebuild
     else
     {
-      //actionline();
+      for(int i = 0; i < trg[0].num; i++)
+      {// to iterate through all of the target names
+        printf("Hello%i\n",i);
+
+
+        if( strcmp(line[i].name, targetname) == 0)
+        {
+          for(int ii = 0; ii < line[i].num_actions;ii++)
+          {
+            actionline(i,ii);
+
+          }
+        }
+      }
       printf("ationline here\n");
     }
+
+    printf("WE ARE OUTSIDE TARGETNAME FUNCTION\n");
+
 
 }
 

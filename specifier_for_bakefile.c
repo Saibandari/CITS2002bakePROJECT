@@ -8,6 +8,7 @@
 
 void specifier()
 {
+printf("WE ARE IN SPECIFIER FUNCTION NOW\n");
 char counter_var[15000];
 
 int i = 0; // only to determine whether the target line contains default target name
@@ -33,7 +34,9 @@ FILE * buffer_file = fopen("Bufferfile.txt","r");
     {
 
       //-----------------------------------------------------------TARGET------------------------------------------------------------
+      //below: putting a null byte at the end of the line so then when can fopen later
       counter_var[strlen(counter_var)-1] = '\0';
+
       //below: this one is for any other target line
       if(strchr(counter_var,':'))
       {
@@ -80,9 +83,13 @@ FILE * buffer_file = fopen("Bufferfile.txt","r");
             }
 
             line[i].name = malloc(strlen(token_target) * sizeof(char));
-            line[i].name = token_target;
-            printf("--%s\n",line[i].name);
+            strcpy(line[i].name,token_target);
+            printf("i is: %i\n",i);
+            printf("line[%i].name:--%s--\n",i,line[i].name);
             printf("buff_counter_var_target: %s\n",buff_counter_var_target);
+            target_or_dependencies++;
+
+
           }
 
           //--------------------------------------------dependencies--------------------------------------------
@@ -120,7 +127,6 @@ FILE * buffer_file = fopen("Bufferfile.txt","r");
           }
 
           token_target = strtok(NULL," \t");
-          target_or_dependencies++;
         }
         printf("We are outside of the loop\n");
         printf("i: %i     j: %i\n",i,j);
@@ -160,58 +166,31 @@ FILE * buffer_file = fopen("Bufferfile.txt","r");
         a = 0;
         b = 1;
 
-
-
-
-        //still have to be able to seperate between the option and the commands
-
-        /*int do_not_print = 0;
-        int exit_always_success = 0;
-
-        char * location_at = strchr(counter_var,'@'); //by default it should print out before execution, but this makes it not printing
-        char * location_DASH = strchr(counter_var,'-');//by default it should use exit status for each action, but with this, exist status will always be successfull
-        if(location_at != NULL && location_DASH == NULL)
-        {
-          do_not_print = 1;
-          exit_always_success = 0;
-          int start = (location_at - counter_var);
-          printf("start: %i\n",start);
-
-        }
-
-        else if(location_DASH != NULL && location_at == NULL)
-        {
-          do_not_print = 0;
-          exit_always_success = 1;
-
-        }
-        else if(location_DASH == NULL && location_at == NULL)
-        {
-          do_not_print = 0;
-          exit_always_success = 0;
-        }
-        else
-        {
-          do_not_print = 0;
-          exit_always_success = 0;
-        }*/
-
-
-
-
-
-
-
-
         //below: reallocating memory since more actions going to be read
         printf("action_counter: %i\ni: %i\n",action_counter,i);
         printf("counter_var: %s\n",counter_var);
-        line[i-1].actions[action_counter] = malloc(strlen(counter_var)*sizeof(char));
+        if(i == 0)
+        {
+          line[i].actions[action_counter] = malloc(strlen(counter_var) * sizeof(char));
+
+        }
+        else
+        {
+          line[i-1].actions[action_counter] = malloc(strlen(counter_var) * sizeof(char));
+        }
+
+        printf("counter_var: %s\n",counter_var);
+
+        printf("int action line if statemnt line[0].name is: %s\n",line[0].name);
+
+
         strcpy(line[i-1].actions[action_counter],counter_var);
 
+        printf("int action line if statemnt line[0].name is: %s\n",line[0].name);
 
 
-        printf("line[i-1].actions[action_counter] is:%s\n",line[i-1].actions[action_counter]);
+
+        printf("line[%i].actions[%i] is:%s\n",i-1,action_counter,line[i-1].actions[action_counter]);
 
         //below: this is to count how many actions realted to a target
         action_counter++;
@@ -231,6 +210,10 @@ FILE * buffer_file = fopen("Bufferfile.txt","r");
 
   }
   printf("test --- the line[0].name is: %s\n",line[0].name);
+  printf("test --- the line[1].name is: %s\n",line[1].name);
+  printf("test --- the line[2].name is: %s\n",line[2].name);
+
+
 
   printf("test --- the line[0].dependencies[1] is: %s\n",line[1].dependencies[3]);
   printf("test --- the line[1].dependencies[0] is: %s\n",line[1].dependencies[0]);
@@ -238,4 +221,6 @@ FILE * buffer_file = fopen("Bufferfile.txt","r");
   printf("test --- the line[1].dependencies[0][1] is: %c\n",line[1].dependencies[0][1]);
 
   fclose(buffer_file);
+  printf("WE ARE OUTSIDE SPECIFIER FUNCTION NOW\n");
+
 }

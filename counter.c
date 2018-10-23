@@ -3,6 +3,7 @@
 
 void counter()
 {
+  printf("WE ARE IN COUNTER FUNCTION NOW\n");
 
   char counter_var[15000];
 
@@ -135,10 +136,28 @@ void counter()
         a = 0;
         b = 1;
 
-        line[target_line_counter-1].actions = realloc(line[target_line_counter-1].actions,(action_line_counter) * sizeof(char*));
+        if (target_line_counter == 0)
+        {
+          line[target_line_counter].actions = realloc(line[target_line_counter].actions,action_line_counter+1 * sizeof(char*));
+
+        }
+        else
+        {
+          line[target_line_counter-1].actions = realloc(line[target_line_counter-1].actions,action_line_counter+1 * sizeof(char*));
+
+        }
 
         action_line_counter++;
-        line[target_line_counter-1].num_actions = action_line_counter;
+        if(target_line_counter == 0)
+        {
+          line[target_line_counter].num_actions = action_line_counter;
+
+        }
+        else
+        {
+          line[target_line_counter-1].num_actions = action_line_counter;
+
+        }
 
       }
 
@@ -166,4 +185,7 @@ void counter()
 
 
   fclose(buffer_file);
+
+  printf("WE ARE OUTSIDE COUNTER FUNCTION NOW\n");
+
 }

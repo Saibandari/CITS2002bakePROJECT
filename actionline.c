@@ -1,13 +1,13 @@
 #include "bake.h"
 
-void actionline(int i)
+void actionline(int i, int ii)
 {
 
   printf("Start of the program\n");
   char * environment;
   char * buff_envi = getenv("SHELL");
 
-  int status;
+  int status = 0;
 
   if (buff_envi == NULL)
   {
@@ -18,8 +18,9 @@ void actionline(int i)
     environment = buff_envi;
   }
 
-  for(int ii = 0; ii < line[i].num_actions;ii++)
-  {
+  printf("line[i].num_actions: %i\n",line[i].num_actions);
+
+
     printf("line[i].actions[ii]: %s\n",line[i].actions[ii]);
 
     if(strchr(line[i].actions[ii],'@') != NULL && strchr(line[i].actions[ii],'-') == NULL)
@@ -57,8 +58,8 @@ void actionline(int i)
         case -1:
 
           printf("fork() failed\n");
-          exit(EXIT_FAILURE);
-          break;
+          //exit(EXIT_FAILURE);
+          //break;
 
         case 0:
           // we are in the child's process
@@ -69,7 +70,16 @@ void actionline(int i)
         default:
         {
           wait(&status);
-          exit(WEXITSTATUS(status));
+
+          if( WIFEXITED(status) == 0)
+          {
+            printf("Exit status: SUCCESS\n");
+
+          }
+          else
+          {
+            printf("Exit status: FAILURE\n");
+          }
         }
 
       }
@@ -86,18 +96,20 @@ void actionline(int i)
         case -1:
 
           printf("fork() failed\n");
-          exit(EXIT_FAILURE);
-          break;
+          //exit(EXIT_FAILURE);
+          //break;
 
         case 0:
           // we are in the child's process
+          printf("line[i].actions[ii] is: %s\n",line[i].actions[ii]);
           execl(environment,"bash","-c",token,NULL);
 
 
         default:
         {
           wait(NULL);
-          exit(EXIT_SUCCESS);
+          //status = 0;
+          printf("Exit status: SUCCESS\n");
         }
       }
     }
@@ -111,87 +123,60 @@ void actionline(int i)
         case -1:
 
           printf("fork() failed\n");
-          exit(EXIT_FAILURE);
-          break;
+          //exit(EXIT_FAILURE);
+          //break;
 
         case 0:
           // we are in the child's process
+          printf("both exist -- line[i].actions[ii] is: %s\n",line[i].actions[ii]);
+
           execl(environment,"bash","-c",token,NULL);
 
 
         default:
         {
           wait(NULL);
-          exit(EXIT_SUCCESS);
+          //status = 0;
+          printf("Exit status: SUCCESS\n");
         }
       }
     }
     else if (strchr(line[i].actions[ii],'@') == NULL && strchr(line[i].actions[ii],'-') == NULL)
     //none exist
     {
+      printf("We are now in the NONE section\n");
       printf("action line is: %s\n",line[i].actions[ii]);
+
       switch(fork())
       {
 
         case -1:
 
           printf("fork() failed\n");
-          exit(EXIT_FAILURE);
-          break;
+          //exit(EXIT_FAILURE);
+          //break;
 
         case 0:
           // we are in the child's process
+          printf("none exist -- line[i].actions[ii] is: %s\n",line[i].actions[ii]);
+
           execl(environment,"bash","-c",token,NULL);
 
 
         default:
         {
           wait(&status);
-          exit(WEXITSTATUS(status));
+
+          if( WIFEXITED(status) == 0)
+          {
+            printf("Exit status: SUCCESS\n");
+
+          }
+          else
+          {
+            printf("Exit status: FAILURE\n");
+          }
         }
       }
     }
-
-  }
-
-
-
 }
-
-  /*char * environment;
-  char * buff_envi = getenv("SHELL");
-
-  //below: if the targetline requires rebuilding then result == 1
-  if (result == 1)
-  {
-    printf("Will do the operation\n");
-
-    //below: if there is no environment variable called SHELL, buff_envi == NULL
-    //and it will set the environment value by default as /bin/bash, if does not exist
-    if (buff_envi == NULL)
-    {
-      environment = "/bin/bash";
-    }
-    else
-    {
-      environment = buff_envi;
-    }
-    printf("%s\n",environment);
-    //do the operation
-    if(fork() == 0)
-    {
-      // we are in the child's process
-      execl(environment,"bash","-c",counter_var,NULL);
-
-    }
-    else
-    {
-      wait(NULL);
-    }
-  }
-  else
-  {
-    //do not
-    printf("Will NOT do the operation\n");
-
-  }*/
