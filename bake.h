@@ -25,7 +25,6 @@ void actionline(int papi,int mamiS);
 void targetname_f();
 
 char * targetname;
-
 char * token;
 
 time_t buffer_dependencies_time;
