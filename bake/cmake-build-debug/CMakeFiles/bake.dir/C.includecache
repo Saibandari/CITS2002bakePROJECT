@@ -1,0 +1,32 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+C:/Users/yasom/CLionProjects/bake/bake.h
+stdio.h
+-
+stdlib.h
+-
+unistd.h
+-
+string.h
+-
+limits.h
+-
+stdbool.h
+-
+
+C:/Users/yasom/CLionProjects/bake/comment_check.c
+bake.h
+C:/Users/yasom/CLionProjects/bake/bake.h
+read_file_into_buf.c
+C:/Users/yasom/CLionProjects/bake/read_file_into_buf.c
+
+C:/Users/yasom/CLionProjects/bake/read_file_into_buf.c
+bake.h
+C:/Users/yasom/CLionProjects/bake/bake.h
+
